@@ -1,26 +1,26 @@
-# ?? MauJajan - Aplikasi Pemesanan Makanan Online (Laravel 11)
+# MauJajan - Aplikasi Pemesanan Makanan Online (Laravel 11)
 
 Aplikasi web pemesanan makanan & minuman online berbasis **Laravel 11**, dirancang untuk mempermudah transaksi pemesanan di restoran/kantin secara digital dari sisi pelanggan (Customer) hingga pengelolaan data & rekap pesanan di sisi Admin.
 
 ---
 
-## ?? Fitur Utama Aplikasi
+## Fitur Utama Aplikasi
 
-### ????? Sisi Customer (Pelanggan)
+### Sisi Customer (Pelanggan)
 1. **Katalog Menu Digital (`/menu`)**: Menampilkan daftar menu makanan, minuman, dan cemilan secara real-time dari database.
-2. **Filter Kategori (JavaScript)**: Memfilter tampilan menu berdasarkan kategori (Makanan, Minuman, Cemilan, Semua Menu) tanpa *reload* halaman.
+2. **Filter Kategori (JavaScript)**: Memfilter tampilan menu berdasarkan kategori (Makanan, Minuman, Cemilan, Semua Menu) tanpa reload halaman.
 3. **Form Pemesanan & Checkout**: Memilih kuantitas porsi makanan, menginputkan Nama Pemesan dan Nomor Meja.
 4. **Modal Konfirmasi Pesanan**: Menampilkan pop-up ringkasan rincian menu dan total pembayaran sebelum pesanan dikirim.
 
-### ??? Sisi Admin (Pengelola / Kasir)
+### Sisi Admin (Pengelola / Kasir)
 1. **Autentikasi Terproteksi (`/login`)**: Login Admin menggunakan paket Laravel Breeze.
-2. **Dashboard Rekap Pesanan (`/dashboard`)**: Menampilkan tabel daftar pesanan masuk dari pelanggan secara *real-time* lengkap dengan rincian item, nomor meja, total harga, dan status pesanan.
-3. **Update Status Pesanan**: Mengubah status pesanan (*Pending*, *Diproses*, *Selesai*, *Batalkan Pesanan*) secara *live* dengan efek badge warna.
+2. **Dashboard Rekap Pesanan (`/dashboard`)**: Menampilkan tabel daftar pesanan masuk dari pelanggan secara real-time lengkap dengan rincian item, nomor meja, total harga, dan status pesanan.
+3. **Update Status Pesanan**: Mengubah status pesanan (*Pending*, *Diproses*, *Selesai*, *Batalkan Pesanan*) secara live dengan efek badge warna.
 4. **CRUD Master Data Makanan (`/admin/foods`)**: Tambah makanan baru (dengan upload gambar), lihat daftar, edit data & gambar, serta hapus makanan.
 
 ---
 
-## ?? Akun Login Admin
+## Akun Login Admin
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
@@ -29,9 +29,9 @@ Aplikasi web pemesanan makanan & minuman online berbasis **Laravel 11**, diranca
 
 ---
 
-## ??? Spesifikasi Teknis & Struktur Database
+## Spesifikasi Teknis & Struktur Database
 
-### ??? Tabel Database (`SQLite`)
+### Tabel Database (`SQLite`)
 1. **`foods` (Master Makanan)**
    - `id`: Primary Key (Auto-Increment)
    - `name`: Nama Makanan/Minuman (`string`)
@@ -59,7 +59,7 @@ Aplikasi web pemesanan makanan & minuman online berbasis **Laravel 11**, diranca
 
 ---
 
-## ?? Petunjuk Instalasi & Menjalankan Proyek
+## Petunjuk Instalasi & Menjalankan Proyek
 
 1. **Clone / Download Repositori**:
    ```bash
@@ -93,7 +93,7 @@ Aplikasi web pemesanan makanan & minuman online berbasis **Laravel 11**, diranca
 
 ---
 
-## ?? Penjelasan File & Alur Baris Kode (Line-by-Line Guide)
+## Penjelasan File & Alur Baris Kode (Line-by-Line Guide)
 
 - **`routes/web.php`**: Berisi seluruh pendaftaran rute aplikasi (Rute Publik Welcome `/`, Katalog `/menu`, Checkout `/checkout`, Rute Terproteksi `/dashboard`, `/admin/foods`, dan `/admin/orders`).
 - **`app/Http/Controllers/FoodController.php`**: Menangani logika bisnis CRUD master data makanan (index, create, store, edit, update, destroy) termasuk manajemen unggah gambar ke storage public.
@@ -102,4 +102,4 @@ Aplikasi web pemesanan makanan & minuman online berbasis **Laravel 11**, diranca
 - **`resources/views/dashboard.blade.php`**: View dashboard admin untuk melihat tabel pesanan masuk, rincian item, dan dropdown update status pesanan.
 
 ---
-© 2026 **MauJajan App** - Developed for Laravel Project Requirement.
+© 2026 MauJajan App - Developed for Laravel Project Requirement.
