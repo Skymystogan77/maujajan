@@ -15,20 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @if(Auth::check() && Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                            {{ __('Admin Dashboard') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.buku.index')" :active="request()->routeIs('admin.buku.*')">
-                            {{ __('Kelola Buku') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.user.index')" :active="request()->routeIs('admin.user.*')">
-                            {{ __('Kelola User') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.peminjaman.index')" :active="request()->routeIs('admin.peminjaman.*')">
-                            {{ __('Kelola Peminjaman') }}
-                        </x-nav-link>
-                    @endif
+                    <x-nav-link :href="route('foods.index')" :active="request()->routeIs('foods.*')">
+                        {{ __('Master Makanan') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+                        {{ __('Rekap Pesanan') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('customer.index')">
+                        {{ __('Lihat Menu') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -84,20 +79,15 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @if(Auth::check() && Auth::user()->role === 'admin')
-                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                    {{ __('Admin Dashboard') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.buku.index')" :active="request()->routeIs('admin.buku.*')">
-                    {{ __('Kelola Buku') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.user.index')" :active="request()->routeIs('admin.user.*')">
-                    {{ __('Kelola User') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.peminjaman.index')" :active="request()->routeIs('admin.peminjaman.*')">
-                    {{ __('Kelola Peminjaman') }}
-                </x-responsive-nav-link>
-            @endif
+            <x-responsive-nav-link :href="route('foods.index')" :active="request()->routeIs('foods.*')">
+                {{ __('Master Makanan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+                {{ __('Rekap Pesanan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('customer.index')">
+                {{ __('Lihat Menu') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

@@ -1,111 +1,97 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Katalog & Peminjaman Buku Perpustakaan') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Daftar Pesanan Masuk') }}
+            </h2>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('foods.index') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 shadow-sm transition">
+                    Kelola Menu
+                </a>
+                <a href="{{ route('customer.index') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 shadow-sm transition">
+                    Lihat Menu Customer
+                </a>
+            </div>
+        </div>
     </x-slot>
-
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-            <!-- Notifikasi Pesan -->
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if(session('success'))
-                <div class="bg-green-100 text-green-700 p-4 rounded-lg shadow" style="background-color: #d1fae5; color: #065f46; padding: 16px; border-radius: 8px; margin-bottom: 16px;">{{ session('success') }}</div>
+                <div class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded shadow-sm font-medium">
+                    {{ session('success') }}
+                </div>
             @endif
-            @if(session('error'))
-                <div class="bg-red-100 text-red-700 p-4 rounded-lg shadow" style="background-color: #fee2e2; color: #991b1b; padding: 16px; border-radius: 8px; margin-bottom: 16px;">{{ session('error') }}</div>
-            @endif
-
-            <!-- Bagian 1: Daftar Katalog Buku Tersedia -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6" style="margin-bottom: 24px;">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">📚 Daftar Katalog Buku Tersedia</h3>
-                
-                <table class="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr class="bg-gray-200 text-gray-700" style="background-color: #e5e7eb; color: #374151;">
-                            <th class="border border-gray-300 p-2">Kode</th>
-                            <th class="border border-gray-300 p-2">Judul Buku</th>
-                            <th class="border border-gray-300 p-2">Pengarang</th>
-                            <th class="border border-gray-300 p-2">Penerbit</th>
-                            <th class="border border-gray-300 p-2">Stok</th>
-                            <th class="border border-gray-300 p-2">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($bukus as $buku)
-                        <tr class="hover:bg-gray-50">
-                            <td class="border border-gray-300 p-2 text-center font-medium">{{ $buku->kode_buku }}</td>
-                            <td class="border border-gray-300 p-2">{{ $buku->judul }}</td>
-                            <td class="border border-gray-300 p-2">{{ $buku->pengarang }}</td>
-                            <td class="border border-gray-300 p-2">{{ $buku->penerbit }}</td>
-                            <td class="border border-gray-300 p-2 text-center">{{ $buku->stok }}</td>
-                            <td class="border border-gray-300 p-2 text-center">
-                                <form action="{{ route('user.pinjam') }}" method="POST" class="inline-block" style="display: inline-block;">
-                                    @csrf
-                                    <input type="hidden" name="buku_id" value="{{ $buku->id }}">
-                                    <!-- Tanggal kembali otomatis 7 hari dari sekarang -->
-                                    <input type="hidden" name="tanggal_kembali" value="{{ date('Y-m-d', strtotime('+7 days')) }}">
-                                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-1 rounded text-sm shadow" style="background-color: #059669; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: 500; border: none; cursor: pointer;">Pinjam</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="border border-gray-300 p-4 text-center text-gray-500">Semua stok buku sedang kosong atau habis dipinjam.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+                <div class="p-6 text-gray-900 overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                            <tr>
+                                <th class="p-4 border-b"># ID</th>
+                                <th class="p-4 border-b">Pelanggan</th>
+                                <th class="p-4 border-b">No. Meja</th>
+                                <th class="p-4 border-b">Rincian Pesanan</th>
+                                <th class="p-4 border-b">Total Harga</th>
+                                <th class="p-4 border-b">Status</th>
+                                <th class="p-4 border-b text-center">Aksi Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y text-sm">
+                            @forelse($orders as $order)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-bold text-gray-700">#{{ $order->id }}</td>
+                                    <td class="p-4 font-medium">{{ $order->customer_name }}</td>
+                                    <td class="p-4">
+                                        <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-1 rounded-full text-xs">
+                                            Meja {{ $order->table_number }}
+                                        </span>
+                                    </td>
+                                    <td class="p-4">
+                                        <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                            @foreach($order->orderDetails as $detail)
+                                                <li>
+                                                    <strong>{{ $detail->food->name ?? 'Menu' }}</strong> 
+                                                    x{{ $detail->quantity }} 
+                                                    <span class="text-xs text-gray-400">(Rp {{ number_format($detail->subtotal) }})</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td class="p-4 font-bold text-green-600">
+                                        Rp {{ number_format($order->total_price) }}
+                                    </td>
+                                    <td class="p-4">
+                                        @if(in_array(strtolower($order->status), ['pending']))
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded">PENDING</span>
+                                        @elseif(in_array(strtolower($order->status), ['completed', 'selesai']))
+                                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded">SELESAI</span>
+                                        @elseif(in_array(strtolower($order->status), ['cancelled', 'batalkan', 'batal']))
+                                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded">BATAL</span>
+                                        @else
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded">{{ strtoupper($order->status) }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <select name="status" onchange="this.form.submit()" class="text-xs border border-gray-300 rounded p-1.5 bg-white shadow-sm font-semibold">
+                                                <option value="Pending" {{ strtolower($order->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                <option value="Diproses" {{ strtolower($order->status) == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                                                <option value="Selesai" {{ in_array(strtolower($order->status), ['completed', 'selesai']) ? 'selected' : '' }}>Selesai / Lunas</option>
+                                                <option value="Batalkan" {{ in_array(strtolower($order->status), ['cancelled', 'batalkan', 'batal']) ? 'selected' : '' }}>Batalkan Pesanan</option>
+                                            </select>  
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="p-6 text-center text-gray-500">Belum ada pesanan masuk.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <!-- Bagian 2: Riwayat Peminjaman & Pengembalian Mandiri -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">📖 Riwayat Peminjaman Buku Saya</h3>
-                
-                <table class="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr class="bg-gray-200 text-gray-700" style="background-color: #e5e7eb; color: #374151;">
-                            <th class="border border-gray-300 p-2">No</th>
-                            <th class="border border-gray-300 p-2">Judul Buku</th>
-                            <th class="border border-gray-300 p-2">Tanggal Pinjam</th>
-                            <th class="border border-gray-300 p-2">Batas Pengembalian</th>
-                            <th class="border border-gray-300 p-2">Status</th>
-                            <th class="border border-gray-300 p-2">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($riwayat as $index => $r)
-                        <tr class="hover:bg-gray-50">
-                            <td class="border border-gray-300 p-2 text-center">{{ $index + 1 }}</td>
-                            <td class="border border-gray-300 p-2">{{ $r->buku->judul }}</td>
-                            <td class="border border-gray-300 p-2 text-center">{{ $r->tanggal_pinjam }}</td>
-                            <td class="border border-gray-300 p-2 text-center">{{ $r->tanggal_kembali }}</td>
-                            <td class="border border-gray-300 p-2 text-center">
-                                <span class="px-2 py-1 rounded text-xs font-semibold {{ $r->status === 'dipinjam' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}" style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background-color: {{ $r->status === 'dipinjam' ? '#fef3c7' : '#d1fae5' }}; color: {{ $r->status === 'dipinjam' ? '#b45309' : '#065f46' }};">
-                                    {{ ucfirst($r->status) }}
-                                </span>
-                            </td>
-                            <td class="border border-gray-300 p-2 text-center">
-                                @if($r->status === 'dipinjam')
-                                    <form action="{{ route('user.kembali', $r->id) }}" method="POST" class="inline-block" style="display: inline-block;" onsubmit="return confirm('Yakin ingin mengembalikan buku ini?')">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-3 py-1 rounded text-sm shadow" style="background-color: #2563eb; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: 500; border: none; cursor: pointer;">Kembalikan</button>
-                                    </form>
-                                @else
-                                    <span class="text-gray-400 text-sm" style="color: #9ca3af; font-size: 14px;">Selesai</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="border border-gray-300 p-4 text-center text-gray-500">Belum ada riwayat peminjaman buku.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
         </div>
     </div>
 </x-app-layout>

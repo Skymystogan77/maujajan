@@ -1,46 +1,45 @@
 <?php
 
-use App\Http\Controllers\Admin\BukuController;
-use App\Http\Controllers\Admin\PeminjamanController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\User\KatalogController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FoodController;
+use App\Http\Controllers\OrderController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes - Aplikasi Pemesanan Makanan MauJajan
+|--------------------------------------------------------------------------
+*/
+
+// 1. Halaman Utama publik: Menampilkan template bawaan Laravel Breeze Welcome Page
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard / Katalog Buku untuk Siswa (User)
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [KatalogController::class, 'index'])->name('dashboard');
-    Route::post('/dashboard/pinjam', [KatalogController::class, 'store'])->name('user.pinjam');
-    Route::patch('/dashboard/kembali/{peminjaman}', [KatalogController::class, 'kembali'])->name('user.kembali');
-});
+// 2. Katalog Menu & Pemesanan Pelanggan (Customer Area)
+Route::get('/menu', [OrderController::class, 'index'])->name('customer.index'); // Menampilkan katalog makanan
+Route::post('/checkout', [OrderController::class, 'store'])->name('customer.checkout'); // Memproses pesanan/checkout
 
-// Dashboard Admin (Membutuhkan middleware kustom atau pengecekan role)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        // Pastikan hanya admin yang bisa akses
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized action.');
-        }
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+// 3. Halaman Dashboard Admin (Wajib Login & Email Terverifikasi)
+Route::get('/dashboard', [OrderController::class, 'adminDashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-    // Route CRUD Buku
-    Route::resource('/admin/buku', BukuController::class, ['as' => 'admin']);
-    // Route CRUD User (Anggota)
-    Route::resource('/admin/user', UserController::class, ['as' => 'admin']);
-    // Route CRUD Peminjaman
-    Route::resource('/admin/peminjaman', PeminjamanController::class, ['as' => 'admin']);
-    Route::patch('/admin/peminjaman/{peminjaman}/kembali', [PeminjamanController::class, 'updateStatus'])->name('admin.peminjaman.kembali');
-});
-
+// 4. Grup Rute Admin (Terproteksi Middleware Auth)
 Route::middleware('auth')->group(function () {
+    // Pengelolaan Profil Pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Alias Rute Dashboard Admin & Rekap Pesanan
+    Route::get('/admin/dashboard', [OrderController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/admin/orders', [OrderController::class, 'adminDashboard'])->name('admin.orders.index');
+    Route::patch('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    
+    // CRUD Master Data Makanan (Resource Controller)
+    Route::resource('/admin/foods', FoodController::class);
 });
 
+// Memuat rute autentikasi bawaan Laravel Breeze (Login, Register, Logout)
 require __DIR__.'/auth.php';

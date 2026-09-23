@@ -1,111 +1,105 @@
-# 📚 Sistem Informasi Peminjaman Buku Perpustakaan Digital (Laravel)
+# ?? MauJajan - Aplikasi Pemesanan Makanan Online (Laravel 11)
 
-Aplikasi Web Sistem Informasi Perpustakaan Digital berbasis **Laravel** dan **Blade UI** untuk mengelola katalog buku, pendaftaran anggota, transaksi peminjaman, serta pengembalian buku secara otomatis dan mandiri. Proyek ini disusun untuk Pembahasan **Paket 4 UKK TH 2026**.
-
-[![Laravel Version](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+Aplikasi web pemesanan makanan & minuman online berbasis **Laravel 11**, dirancang untuk mempermudah transaksi pemesanan di restoran/kantin secara digital dari sisi pelanggan (Customer) hingga pengelolaan data & rekap pesanan di sisi Admin.
 
 ---
 
-## ✨ Fitur Utama
+## ?? Fitur Utama Aplikasi
 
-### 👨‍💼 Panel Administrator
-- 📊 **Dashboard Admin**: Ringkasan sistem dan akses cepat navigasi modul.
-- 📚 **CRUD Data Buku**: Pengelolaan data buku perpustakaan (Kode Buku Unique, Judul, Pengarang, Penerbit, Stok).
-- 👥 **CRUD Data Anggota (User)**: Pengelolaan akun siswa dan admin (Tambah, Edit, Hapus dengan proteksi akun aktif, Hashing Password).
-- 🔄 **CRUD Transaksi Peminjaman**: Pencatatan transaksi peminjaman oleh admin dengan pembaruan stok otomatis (*auto-decrement* & *auto-increment* saat dikembalikan/dihapus).
+### ????? Sisi Customer (Pelanggan)
+1. **Katalog Menu Digital (`/menu`)**: Menampilkan daftar menu makanan, minuman, dan cemilan secara real-time dari database.
+2. **Filter Kategori (JavaScript)**: Memfilter tampilan menu berdasarkan kategori (Makanan, Minuman, Cemilan, Semua Menu) tanpa *reload* halaman.
+3. **Form Pemesanan & Checkout**: Memilih kuantitas porsi makanan, menginputkan Nama Pemesan dan Nomor Meja.
+4. **Modal Konfirmasi Pesanan**: Menampilkan pop-up ringkasan rincian menu dan total pembayaran sebelum pesanan dikirim.
 
-### 👨‍🎓 Panel Siswa (User / Member)
-- 📖 **Daftar Katalog Buku Tersedia**: Menampilkan buku yang memiliki stok aktif (`stok > 0`).
-- ⚡ **Peminjaman Mandiri**: Meminjam buku langsung dari katalog dengan kalkulasi otomatis tanggal pinjam & batas pengembalian (+7 hari).
-- 📜 **Riwayat Peminjaman Saya**: Memantau daftar buku yang sedang dipinjam beserta statusnya (`Dipinjam` / `Dikembalikan`).
-- ↩️ **Pengembalian Mandiri**: Siswa dapat mengembalikan buku secara mandiri dari dashboard, dan stok buku otomatis bertambah kembali.
-
----
-
-## 🛠️ Teknologi & Stack
-
-- **Framework Backend**: Laravel 11.x (PHP 8.2+)
-- **Frontend / Templating**: Blade Engine, Alpine.js, Tailwind CSS (Laravel Breeze)
-- **Database**: MySQL / MariaDB
-- **ORM**: Eloquent ORM (Relasi `User`, `Buku`, dan `Peminjaman`)
+### ??? Sisi Admin (Pengelola / Kasir)
+1. **Autentikasi Terproteksi (`/login`)**: Login Admin menggunakan paket Laravel Breeze.
+2. **Dashboard Rekap Pesanan (`/dashboard`)**: Menampilkan tabel daftar pesanan masuk dari pelanggan secara *real-time* lengkap dengan rincian item, nomor meja, total harga, dan status pesanan.
+3. **Update Status Pesanan**: Mengubah status pesanan (*Pending*, *Diproses*, *Selesai*, *Batalkan Pesanan*) secara *live* dengan efek badge warna.
+4. **CRUD Master Data Makanan (`/admin/foods`)**: Tambah makanan baru (dengan upload gambar), lihat daftar, edit data & gambar, serta hapus makanan.
 
 ---
 
-## 💻 Akun Pengujian Default (Seeder)
+## ?? Akun Login Admin
 
-Setelah menjalankan seeder database (`php artisan db:seed`), gunakan kredensial berikut untuk menguji sistem:
-
-| Role | Email | Password | Hak Akses |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `admin@perpus.com` | `password123` | Full Access (CRUD Buku, User, & Peminjaman) |
-| **Siswa / User** | `siswa@perpus.com` | `password123` | Katalog & Peminjaman Mandiri |
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@maujajan.com` | `password123` |
+| **User/Customer** | `user@maujajan.com` | `password123` |
 
 ---
 
-## 🚀 Langkah Instalasi Lokal
+## ??? Spesifikasi Teknis & Struktur Database
 
-Ikuti langkah-langkah di bawah ini untuk menjalankan repositori ini di lingkungan lokal Anda:
+### ??? Tabel Database (`SQLite`)
+1. **`foods` (Master Makanan)**
+   - `id`: Primary Key (Auto-Increment)
+   - `name`: Nama Makanan/Minuman (`string`)
+   - `category`: Kategori (`enum`: `'Makanan'`, `'Minuman'`, `'Cemilan'`)
+   - `price`: Harga Produk dalam Rupiah (`integer`)
+   - `description`: Deskripsi Produk (`text`)
+   - `image`: Path Gambar Produk (`string`, nullable)
+   - `timestamps`: `created_at` & `updated_at`
 
-### 1. Clone Repositori
-```bash
-git clone https://github.com/Skymystogan77/peminjamanbuku-laravel.git
-cd peminjamanbuku-laravel
-```
+2. **`orders` (Transaksi Pesanan)**
+   - `id`: Primary Key (Auto-Increment)
+   - `customer_name`: Nama Pemesan (`string`)
+   - `table_number`: Nomor Meja (`string`)
+   - `total_price`: Total Tagihan Pembayaran (`integer`)
+   - `status`: Status Pesanan (`string`, default: `'Pending'`)
+   - `timestamps`: `created_at` & `updated_at`
 
-### 2. Install Dependensi PHP & NPM
-```bash
-composer install
-npm install
-```
-
-### 3. Konfigurasi File Environment `.env`
-Salin file `.env.example` menjadi `.env`:
-```bash
-cp .env.example .env
-```
-
-Buka file `.env` dan atur konfigurasi database MySQL Anda:
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=db_perpus_digital
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-### 4. Generate App Key
-```bash
-php artisan key:generate
-```
-
-### 5. Migrasi & Seeder Database
-Jalankan migrasi tabel beserta data awal admin & contoh buku:
-```bash
-php artisan migrate --seed
-```
-
-### 6. Jalankan Server Lokal
-Jalankan server aplikasi Laravel:
-```bash
-php artisan serve
-```
-
-Akses aplikasi di browser melalui alamat: `http://127.0.0.1:8000`
+3. **`order_details` (Detail Transaksi / Relasi)**
+   - `id`: Primary Key (Auto-Increment)
+   - `order_id`: Foreign Key ke `orders.id` (`cascade`)
+   - `food_id`: Foreign Key ke `foods.id` (`cascade`)
+   - `quantity`: Jumlah Porsi Dipesan (`integer`)
+   - `subtotal`: Subtotal Harga Item (`integer`)
+   - `timestamps`: `created_at` & `updated_at`
 
 ---
 
-## 📌 Alur Penggunaan Sistem
+## ?? Petunjuk Instalasi & Menjalankan Proyek
 
-1. **Login sebagai Admin**: Buka `/login` dengan akun `admin@perpus.com` $\rightarrow$ Akses `/admin/dashboard` untuk mengelola data buku, user/siswa, dan transaksi peminjaman.
-2. **Login sebagai Siswa**: Buka `/login` dengan akun `siswa@perpus.com` $\rightarrow$ Akses `/dashboard` untuk melihat katalog buku tersedia, klik **Pinjam**, lalu lakukan **Pengembalian Mandiri** dari tabel riwayat.
+1. **Clone / Download Repositori**:
+   ```bash
+   git clone https://github.com/Skymystogan77/maujajan.git
+   cd maujajan
+   ```
+
+2. **Install Dependensi Composer & NPM**:
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Konfigurasi File `.env`**:
+   Pastikan konfigurasi `.env` menggunakan database SQLite:
+   ```env
+   DB_CONNECTION=sqlite
+   ```
+
+4. **Jalankan Migration & Seeder Database**:
+   ```bash
+   php artisan migrate:fresh --seed
+   php artisan storage:link
+   ```
+
+5. **Jalankan Server Aplikasi**:
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi dapat diakses melalui browser di: `http://127.0.0.1:8000`
 
 ---
 
-## 👤 Penulis & Pengembang
+## ?? Penjelasan File & Alur Baris Kode (Line-by-Line Guide)
 
-* **GitHub**: [@Skymystogan77](https://github.com/Skymystogan77)
-* **Proyek**: UKK Paket 4 TH 2026 - Aplikasi Peminjaman Perpustakaan Digital
+- **`routes/web.php`**: Berisi seluruh pendaftaran rute aplikasi (Rute Publik Welcome `/`, Katalog `/menu`, Checkout `/checkout`, Rute Terproteksi `/dashboard`, `/admin/foods`, dan `/admin/orders`).
+- **`app/Http/Controllers/FoodController.php`**: Menangani logika bisnis CRUD master data makanan (index, create, store, edit, update, destroy) termasuk manajemen unggah gambar ke storage public.
+- **`app/Http/Controllers/OrderController.php`**: Menangani logika pembuatan pesanan pelanggan dengan fitur **Database Transaction (`DB::beginTransaction()`)** untuk menjaga konsistensi data multi-tabel antara `orders` dan `order_details`, serta update status pesanan admin.
+- **`resources/views/customer/index.blade.php`**: View katalog pelanggan menggunakan Tailwind CSS CDN, filter JavaScript, form checkout, dan modal konfirmasi sebelum submit.
+- **`resources/views/dashboard.blade.php`**: View dashboard admin untuk melihat tabel pesanan masuk, rincian item, dan dropdown update status pesanan.
+
+---
+� 2026 **MauJajan App** - Developed for Laravel Project Requirement.
